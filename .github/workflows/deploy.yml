@@ -16,12 +16,34 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  deploy:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+      - name: Checkout source code
+        uses: actions/checkout@master
+      
+      - name: Set up Node.js
+        uses: actions/checkout@master
+        with:
+          node-version: 14.x
+      
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build page
+        run: yarn build
+        env:
+          NODE_ENV: production
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          public_dir: ./dist
+      
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
